@@ -4,17 +4,15 @@ public class TDDKata {
 	
 	public int Add(String numbers)
 	{
-		if (numbers.equals(""))
+		int sum = 0;
+		for (int i = 0; i < numbers.length(); i++)
 		{
-			return 0;
+			char charAtIndex = numbers.charAt(i);
+			if (charAtIndex != ',')
+			{
+				sum += Character.getNumericValue(charAtIndex);
+			}
 		}
-		else if (numbers.length() == 1)
-		{
-			return Character.getNumericValue(numbers.charAt(0));
-		}
-		else
-		{
-			return Character.getNumericValue(numbers.charAt(0)) + Character.getNumericValue(numbers.charAt(2));
-		}
+		return sum;
 	}
 }

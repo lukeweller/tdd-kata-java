@@ -31,4 +31,10 @@ public class TDDKataTest {
 	{
 		Assert.assertEquals(3, tddKata.Add("1,2"));
 	}
+	
+	@Test
+	public void handlesUnknownAmountOfNumbers()
+	{
+		Assert.assertEquals(3, tddKata.Add("1,1,1"));
+	}
 }
