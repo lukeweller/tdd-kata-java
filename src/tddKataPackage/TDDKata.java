@@ -8,7 +8,7 @@ public class TDDKata {
 		for (int i = 0; i < numbers.length(); i++)
 		{
 			char charAtIndex = numbers.charAt(i);
-			if (charAtIndex != ',')
+			if (charAtIndex != ',' && charAtIndex != '\n')
 			{
 				sum += Character.getNumericValue(charAtIndex);
 			}

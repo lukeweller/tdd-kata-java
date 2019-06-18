@@ -37,4 +37,10 @@ public class TDDKataTest {
 	{
 		Assert.assertEquals(3, tddKata.Add("1,1,1"));
 	}
+	
+	@Test
+	public void handlesNewLinesBetweenNumbers()
+	{
+		Assert.assertEquals(6, tddKata.Add("1\n2,3"));
+	}
 }
