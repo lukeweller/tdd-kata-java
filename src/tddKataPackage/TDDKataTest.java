@@ -47,7 +47,7 @@ public class TDDKataTest {
 	@Test
 	public void handlesDifferentDelimiters()
 	{
-		Assertions.assertEquals(3, tddKata.Add("//;\n1;2"));
+		Assertions.assertEquals(3, tddKata.Add("//[;]\n1;2"));
 	}
 	
 	@Test
@@ -74,5 +74,11 @@ public class TDDKataTest {
 	public void handlesNumbersGreaterThanOneThousand()
 	{
 		Assertions.assertEquals(101, tddKata.Add("1001,100,1"));
+	}
+	
+	@Test
+	public void handlesAnyLengthDelimiters()
+	{
+		Assertions.assertEquals(6, tddKata.Add("//[***]\n1***2***3"));
 	}
 }
