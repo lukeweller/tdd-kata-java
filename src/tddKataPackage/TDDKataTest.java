@@ -43,4 +43,10 @@ public class TDDKataTest {
 	{
 		Assert.assertEquals(6, tddKata.Add("1\n2,3"));
 	}
+	
+	@Test
+	public void handlesDifferentDelimiters()
+	{
+		Assert.assertEquals(3, tddKata.Add("//;\n1;2"));
+	}
 }
