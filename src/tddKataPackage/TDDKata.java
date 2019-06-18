@@ -31,13 +31,21 @@ public class TDDKata {
 	
 	private int returnSumOfNumberString(String numbers, HashSet<Character> delimiters)
 	{
-		int sum = 0;
-		for (int i = 0; i < numbers.length(); i++)
+		String delimiterString = "";
+		for (Character delimiter : delimiters)
 		{
-			char charAtIndex = numbers.charAt(i);
-			if (!delimiters.contains(charAtIndex)) {
-				sum += Character.getNumericValue(charAtIndex);
-			}
+			delimiterString += String.valueOf(delimiter) + String.valueOf('|');
+		}
+		// Cuts off trailing '|'
+		delimiterString = delimiterString.substring(0, delimiterString.length() - 1);
+		
+		String[] numbersArray = numbers.split(delimiterString);
+		
+		int sum = 0;
+		for (String number : numbersArray)
+		{
+			int numberValue = Integer.parseInt(number);
+			sum += (numberValue <= 1000) ? numberValue : 0;
 		}
 		return sum;
 	}

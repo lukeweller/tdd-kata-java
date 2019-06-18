@@ -57,4 +57,22 @@ public class TDDKataTest {
 			tddKata.Add("-1,-2,3");
 		});
 	}
+	
+	@Test
+	public void handlesDoubleDigitNumbers()
+	{
+		Assertions.assertEquals(25, tddKata.Add("10,3,12"));
+	}
+	
+	@Test
+	public void handlesTripleDigitNumbers()
+	{
+		Assertions.assertEquals(1100, tddKata.Add("100,999,1"));
+	}
+	
+	@Test
+	public void handlesNumbersGreaterThanOneThousand()
+	{
+		Assertions.assertEquals(101, tddKata.Add("1001,100,1"));
+	}
 }
