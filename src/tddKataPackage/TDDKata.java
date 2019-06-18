@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-
 public class TDDKata {
 	
 	private class Tuple<X, Y> 
@@ -18,45 +17,32 @@ public class TDDKata {
 		 } 
 	}
 	
-	private ArrayList<Integer> returnAllNegatives(String numbers)
+	private Tuple<String, HashSet<String>> addNewDelimiters(String numbers, HashSet<String> delimiters)
 	{
-		ArrayList<Integer> negatives = new ArrayList<Integer>();
-		for (int i = 0; i < numbers.length(); i++)
+		int index = 0;
+		while (numbers.charAt(index) != '\n')
 		{
-			if (numbers.charAt(i) == '-')
+			String newDelimiterString = "";
+			
+			while (numbers.charAt(index) != '[')
 			{
-				negatives.add(-1 * Character.getNumericValue(numbers.charAt(i+1)));
+				index++;
 			}
-		}
-		return negatives;	
-	}
-	
-	private void throwNegativesException(ArrayList<Integer> negatives)
-	{
-		String exceptionMessage = "negatives not allowed, found:";
-		for (int negative : negatives)
-		{
-			exceptionMessage += " " + Integer.toString(negative);
-		}
-		throw new RuntimeException(exceptionMessage);
-	}
-	
-	private Tuple<String, HashSet<String>> addNewDelimiter(String numbers, HashSet<String> delimiters)
-	{
-		String newDelimiterString = "";
-		int index = 3;
-		while (numbers.charAt(index) != ']')
-		{
-			String newRegexCharacter = String.valueOf(numbers.charAt(index));
-			if (isRegexMetaCharacter(newRegexCharacter))
-			{
-				newRegexCharacter = "\\" + newRegexCharacter;
+			index++;
+			while (numbers.charAt(index) != ']')
+			{	
+				String newRegexCharacter = String.valueOf(numbers.charAt(index));
+				if (isRegexMetaCharacter(newRegexCharacter))
+				{
+					newRegexCharacter = "\\" + newRegexCharacter;
+				}
+				newDelimiterString += newRegexCharacter;
+				index++;
 			}
-			newDelimiterString += newRegexCharacter;
+			delimiters.add(newDelimiterString);
 			index++;
 		}
-		delimiters.add(newDelimiterString);
-		numbers = numbers.substring(index + 2);
+		numbers = numbers.substring(index + 1);
 		
 		Tuple<String, HashSet<String>> returnTuple = new Tuple<String, HashSet<String>>(numbers, delimiters);
 		return returnTuple;
@@ -82,6 +68,9 @@ public class TDDKata {
 		
 		String[] numbersArray = numbers.split(delimiterString);
 		
+		ArrayList<Integer> negatives = returnAllNegatives(numbersArray);
+		if (negatives.size() != 0) throwNegativesException(negatives);
+			
 		int sum = 0;
 		for (String number : numbersArray)
 		{
@@ -91,22 +80,42 @@ public class TDDKata {
 		return sum;
 	}
 	
-	public int Add(String numbers)
+	private ArrayList<Integer> returnAllNegatives(String [] numbers)
 	{
-		ArrayList<Integer> negatives = returnAllNegatives(numbers);
-		
-		if (negatives.size() != 0) throwNegativesException(negatives);
-		
+		ArrayList<Integer> negatives = new ArrayList<Integer>();
+		for (String number : numbers)
+		{
+			int intNumber = Integer.parseInt(number);
+			if ( intNumber < 0)
+			{
+				negatives.add(intNumber);
+			}
+		}
+		return negatives;	
+	}
+	
+	private void throwNegativesException(ArrayList<Integer> negatives)
+	{
+		String exceptionMessage = "negatives not allowed, found:";
+		for (int negative : negatives)
+		{
+			exceptionMessage += " " + Integer.toString(negative);
+		}
+		throw new RuntimeException(exceptionMessage);
+	}
+	
+	public int Add(String numbers)
+	{	
 		if (numbers.equals("")) return 0;
 		
 		HashSet<String> delimiters = new HashSet<String>(Arrays.asList(",","\n"));
 
-		if (numbers.charAt(0) == '/') 
+		if (numbers.length() > 1 && numbers.substring(0, 2).equals("//")) 
 		{
 			// Adds new delimiter to delimiters
 			// Pops the front part off of the numbers string so that it starts with the first digit
 			// Tuple class used to return both values at once
-			Tuple<String, HashSet<String>> holderTuple = addNewDelimiter(numbers, delimiters);
+			Tuple<String, HashSet<String>> holderTuple = addNewDelimiters(numbers, delimiters);
 			
 			numbers = holderTuple.numbers;
 			delimiters = holderTuple.delimiters;

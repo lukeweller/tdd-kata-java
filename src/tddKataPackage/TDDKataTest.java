@@ -21,6 +21,14 @@ public class TDDKataTest {
 	}
 	
 	@Test
+	public void handlesNullString()
+	{
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			tddKata.Add(null);
+		});
+	}
+	
+	@Test
 	public void handlesOneNumber()
 	{
 		Assertions.assertEquals(1, tddKata.Add("1"));
@@ -53,9 +61,19 @@ public class TDDKataTest {
 	@Test
 	public void handlesNegativesNotAllowed()
 	{
-		Assertions.assertThrows(RuntimeException.class, () -> {
+		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
 			tddKata.Add("-1,-2,3");
 		});
+		Assertions.assertEquals("negatives not allowed, found: -1 -2", exception.getMessage());
+	}
+	
+	@Test
+	public void handlesNegativesNotAllowedMultipleDigits()
+	{
+		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
+			tddKata.Add("-10,-200,-3");
+		});
+		Assertions.assertEquals("negatives not allowed, found: -10 -200 -3", exception.getMessage());
 	}
 	
 	@Test
@@ -81,4 +99,36 @@ public class TDDKataTest {
 	{
 		Assertions.assertEquals(6, tddKata.Add("//[***]\n1***2***3"));
 	}
+	
+	@Test
+	public void handlesMultipleNewDelimiters()
+	{
+		Assertions.assertEquals(6, tddKata.Add("//[*][%]\n1*2%3"));
+	}
+	
+	@Test
+	public void handlesMultipleNewDelimitersOfAnyLength()
+	{
+		Assertions.assertEquals(6, tddKata.Add("//[**][%;]\n1**2%;3"));
+	}
+	
+	@Test
+	public void handlesNewDelimiterIncorrectFormatting()
+	{
+		Assertions.assertThrows(NumberFormatException.class, () -> {
+			tddKata.Add("/[**]\n1**2%;3");
+		});
+		Assertions.assertThrows(NumberFormatException.class, () -> {
+			tddKata.Add("[**]\n1**2%;3");
+		});
+		Assertions.assertThrows(NumberFormatException.class, () -> {
+			tddKata.Add("**]\n1**2%;3");
+		});
+		Assertions.assertThrows(NumberFormatException.class, () -> {
+			tddKata.Add("**\n1**2%;3");
+		});
+		Assertions.assertThrows(StringIndexOutOfBoundsException.class, () -> {
+			tddKata.Add("//\n1**2%;3");
+		});
+	}	
 }
