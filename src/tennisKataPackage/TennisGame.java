@@ -12,6 +12,7 @@ public class TennisGame {
 	private Map<String, String> playerScores = new LinkedHashMap<String, String>();
 	private final List<String> possibleScores = new ArrayList<String>(Arrays.asList("love", "15", "30", "40", "game point"));
 	private boolean currentlyDeuce, gameOver = false;
+	private StringBuilder scoreHistory = new StringBuilder();
 
 	public void incrementScore(String playerName)
 	{	
@@ -26,19 +27,23 @@ public class TennisGame {
 			if (currentlyHoldsAdvantage == null)
 			{
 				currentlyHoldsAdvantage = playerName;
+				scoreHistory.append(reportScore() + "\n");
 				return;
 			}
 			else if (currentlyHoldsAdvantage.equals(playerName));
 			else
 			{
 				currentlyHoldsAdvantage = null;
+				scoreHistory.append(reportScore() + "\n");
 				return;
 			}
 		}
 		changePlayerScore(playerName, currentScore);
+		scoreHistory.append(reportScore() + "\n");
 	}
 
-	public String reportScore() {
+	public String reportScore()
+	{
 		String serverScore = playerScores.get(server);
 		String opponentScore = playerScores.get(opponent);
 		if (gameOver)
@@ -65,8 +70,20 @@ public class TennisGame {
 		}
 		else
 		{
+			// ? for Code Review
+			// It is it worth it or considered best practice to 
+			// use a stringBuilder object for this purpose
+			// As opposed to just concatenating the strings
 			return serverScore + "-" + opponentScore;				
 		}
+	}
+	
+	
+	public String getScoreHistory()
+	{
+		String scoreHistoryString = scoreHistory.toString();
+		// Cuts off trailing '\n'
+		return scoreHistoryString.substring(0, scoreHistoryString.length() - 1);
 	}
 	
 	public boolean isGameOver()
@@ -104,6 +121,8 @@ public class TennisGame {
 		
 		playerScores.put(server, "love");
 		playerScores.put(opponent, "love");
+		
+		scoreHistory.append("love-love\n");
 	}
 
 }
