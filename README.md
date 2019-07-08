@@ -1,10 +1,11 @@
 # tdd-kata-java
 Simple Kata exercises to practice test-driven development in Java
+**Exercise 1**: [Link](https://osherove.com/tdd-kata-1)
 
-_Exercise 1_: [Link](https://osherove.com/tdd-kata-1)
-_Exercise 2_: 
+**Exercise 2**: 
 
 Tennis Game Kata
+----------------
 
 Write a TennisGame class that will keep score of a tennis game. The rules for scoring in tennis are as follows:
 
