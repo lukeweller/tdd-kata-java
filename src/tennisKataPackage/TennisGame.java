@@ -9,7 +9,9 @@ import java.util.Map;
 public class TennisGame {
 
 	private Map<String, String> playerScores = new LinkedHashMap<String, String>();
-	private List<String> possibleScores = new ArrayList<String>(Arrays.asList("love", "15", "30", "40", "game point"));
+	private final List<String> possibleScores = new ArrayList<String>(Arrays.asList("love", "15", "30", "40", "game point"));
+	private String currentlyServing;
+	private String currentlyReceiving;
 
 	public void incrementScore(String playerName)
 	{	
@@ -28,19 +30,26 @@ public class TennisGame {
 
 	public String reportScore() {
 		StringBuilder scoreReport = new StringBuilder();
-		for (Map.Entry<String, String> player : playerScores.entrySet()) {
-			scoreReport.append(player.getKey() + " : ");
-			scoreReport.append(player.getValue() + "\n");
-		}
-		// Cuts off trailing newline character
-		scoreReport.setLength(scoreReport.length() - 1);
+		
+		scoreReport.append(playerScores.get(currentlyServing));
+		scoreReport.append("-");
+		scoreReport.append(playerScores.get(currentlyReceiving));
 
 		return scoreReport.toString();
+	}
+	
+	private void changeServer()
+	{
+		String holdCurrentlyServing = currentlyServing;
+		currentlyServing = currentlyReceiving;
+		currentlyReceiving = holdCurrentlyServing;
 	}
 
 	public TennisGame(String playerOneName, String playerOneScore, String playerTwoName, String playerTwoScore) {
 		playerScores.put(playerOneName, playerOneScore);
 		playerScores.put(playerTwoName, playerTwoScore);
+		currentlyServing = playerOneName;
+		currentlyReceiving = playerTwoName;
 	}
 
 }
