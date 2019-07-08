@@ -1,5 +1,6 @@
 # tdd-kata-java
 Simple Kata exercises to practice test-driven development in Java
+
 **Exercise 1**: [Link](https://osherove.com/tdd-kata-1)
 
 **Exercise 2**: 
