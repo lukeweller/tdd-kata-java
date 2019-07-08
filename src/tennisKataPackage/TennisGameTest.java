@@ -62,4 +62,16 @@ public class TennisGameTest {
 		});
 		assertEquals("Tried to record point for player that has already won", exception.getMessage());
 	}
+	
+	@Test
+	public void tieAtFortyReturnsDeuce()
+	{
+		for (int _i = 0; _i < 3; _i++)
+		{
+			tennisGame.incrementScore("Jim");
+			tennisGame.incrementScore("Dwight");
+		}
+		assertEquals("deuce", tennisGame.reportScore());
+	}
+	
 }
