@@ -93,4 +93,21 @@ public class TennisGameTest {
 		assertEquals("advantage Dwight", tennisGame.reportScore());
 	}
 	
+	@Test
+	public void checkIfGameOverWorksAsExpected()
+	{
+		for (int _i = 0; _i < 3; _i++)
+		{
+			tennisGame.incrementScore("Jim");
+			tennisGame.incrementScore("Dwight");
+		}	
+		assertEquals(false, tennisGame.isGameOver());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals(false, tennisGame.isGameOver());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals(true, tennisGame.isGameOver());
+	}
+	
 }
