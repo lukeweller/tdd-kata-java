@@ -29,13 +29,16 @@ public class TennisGame {
 	}
 
 	public String reportScore() {
-		StringBuilder scoreReport = new StringBuilder();
-		
-		scoreReport.append(playerScores.get(currentlyServing));
-		scoreReport.append("-");
-		scoreReport.append(playerScores.get(currentlyReceiving));
-
-		return scoreReport.toString();
+		String currentlyServingScore = playerScores.get(currentlyServing);
+		String currentlyReceivingScore = playerScores.get(currentlyReceiving);
+		if (currentlyServingScore.equals("40") && currentlyReceivingScore.equals("40"))
+		{
+			return "deuce";
+		}
+		else
+		{
+			return currentlyServingScore + "-" + currentlyReceivingScore;				
+		}
 	}
 	
 	private void changeServer()
