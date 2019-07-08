@@ -1,5 +1,5 @@
 # tdd-kata-java
-Simple Kata excercises to practice test-driven development in Java
+Simple Kata exercises to practice test-driven development in Java
 
 Exercise 1: [Link](https://osherove.com/tdd-kata-1)
 1. Create a simple String calculator with a method signature:
