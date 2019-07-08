@@ -27,12 +27,7 @@ Write a TennisGame class that will keep score of a tennis game. The rules for sc
 5. When reporting advantage, it should be displayed as "advantage server" or "advantage opponent", depending on who scored the point after deuce.
 6. Provide a method to indicate if the game is over.
 7. When reporting a score after the game is over, it should display either "server wins" or "opponent wins" (depending on who won)
-7. After someone wins, the score should not be allowed to further advance. 
-8. Variation on #7: If an attempt to advance the score occurs after a game is complete, the class should throw a GameOverException.
-
-Extras (time permitting)
-
-9. Let the user specify names for the server and opponent. When reporting advantage, or victory, the names should be used instead of "server" and "opponent".
-10. Keep track of the entire history of how a game was scored, point by point, and provide a method to display all the scores up to the current one. Each point should be displayed per the display rules above, with each point on a new line.
-
-
+8. After someone wins, the score should not be allowed to further advance. 
+9. Variation on #8: If an attempt to advance the score occurs after a game is complete, the class should throw a GameOverException.
+10. Let the user specify names for the server and opponent. When reporting advantage, or victory, the names should be used instead of "server" and "opponent".
+11. Keep track of the entire history of how a game was scored, point by point, and provide a method to display all the scores up to the current one. Each point should be displayed per the display rules above, with each point on a new line.
