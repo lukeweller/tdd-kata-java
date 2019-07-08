@@ -18,7 +18,7 @@ Write a TennisGame class that will keep score of a tennis game. The rules for sc
 6. If the player with advantage loses the next point, the score returns to deuce.
 7. Thus (putting it all together), the only valid scores for a player in a tennis game are: love, 15, 30, 40, deuce, advantage, and game point
 
-##### Your TennisGame class should do the following:
+#### Your TennisGame class should do the following:
 
 1. Provide a way to report the current score.
 2. Provide a way to record a point for either of the players (server or opponent)
