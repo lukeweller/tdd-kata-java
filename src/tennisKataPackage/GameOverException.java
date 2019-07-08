@@ -1,10 +1,10 @@
 package tennisKataPackage;
 
-public class ScoringErrorException extends RuntimeException
+public class GameOverException extends RuntimeException
 {
 	private static final long serialVersionUID = 1L;
 
-	ScoringErrorException(String errorMessage)
+	GameOverException(String errorMessage)
 	{
         super(errorMessage);
     }
