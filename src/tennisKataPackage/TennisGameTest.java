@@ -19,23 +19,23 @@ public class TennisGameTest {
 	@Test
 	public void reportTheCurentScore()
 	{
-		assertEquals("Jim : love\nDwight : love", tennisGame.reportScore());
+		assertEquals("love-love", tennisGame.reportScore());
 	}
 	
 	@Test
 	public void incrementPlayerScore()
 	{
 		tennisGame.incrementScore("Jim");
-		assertEquals("Jim : 15\nDwight : love", tennisGame.reportScore());
+		assertEquals("15-love", tennisGame.reportScore());
 		
 		tennisGame.incrementScore("Dwight");
-		assertEquals("Jim : 15\nDwight : 15", tennisGame.reportScore());
+		assertEquals("15-15", tennisGame.reportScore());
 		
 		for (int _i = 0; _i < 3; _i++)
 		{
 			tennisGame.incrementScore("Jim");
 		}
-		assertEquals("Jim : game point\nDwight : 15", tennisGame.reportScore());
+		assertEquals("game point-15", tennisGame.reportScore());
 	}
 	
 	@Test
