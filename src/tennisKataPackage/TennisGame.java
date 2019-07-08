@@ -26,37 +26,33 @@ public class TennisGame {
 			if (currentlyHoldsAdvantage == null)
 			{
 				currentlyHoldsAdvantage = playerName;
+				return;
 			}
-			else if (currentlyHoldsAdvantage.equals(playerName))
-			{
-				gameOver = true;
-			}
+			else if (currentlyHoldsAdvantage.equals(playerName));
 			else
 			{
 				currentlyHoldsAdvantage = null;
+				return;
 			}
 		}
-		else
-		{
-			int nextScoreIndex = possibleScores.indexOf(currentScore) + 1;
-			String nextScore = possibleScores.get(nextScoreIndex);
-			playerScores.put(playerName, nextScore);
-			
-			if (nextScore.equals("game point"))
-			{
-				gameOver = true;
-			}
-			else
-			{
-				currentlyDeuce = setIsDeuce();
-			}
-		}
+		changePlayerScore(playerName, currentScore);
 	}
 
 	public String reportScore() {
 		String serverScore = playerScores.get(server);
 		String opponentScore = playerScores.get(opponent);
-		if (currentlyDeuce)
+		if (gameOver)
+		{
+			if (serverScore.equals("game point"))
+			{
+				return server + " wins";
+			}
+			else
+			{
+				return opponent + " wins";
+			}
+		}
+		else if (currentlyDeuce)
 		{
 			if (currentlyHoldsAdvantage == null)
 			{
@@ -78,18 +74,27 @@ public class TennisGame {
 		return gameOver;
 	}
 	
-	private boolean setIsDeuce()
+	private void changePlayerScore(String playerName, String currentScore)
 	{
-		String serverScore = playerScores.get(server);
-		String opponentScore = playerScores.get(opponent);
-		if (serverScore.equals("40") && opponentScore.equals("40"))
+		int nextScoreIndex = possibleScores.indexOf(currentScore) + 1;
+		String nextScore = possibleScores.get(nextScoreIndex);
+		playerScores.put(playerName, nextScore);
+			
+		if (nextScore.equals("game point"))
 		{
-			return true;
+			gameOver = true;
 		}
 		else
 		{
-			return false;
+			currentlyDeuce = isCurrentlyDeuce();
 		}
+	}
+	
+	private boolean isCurrentlyDeuce()
+	{
+		String serverScore = playerScores.get(server);
+		String opponentScore = playerScores.get(opponent);
+		return (serverScore.equals("40") && opponentScore.equals("40"));
 	}
 			
 	public TennisGame(String serverName, String opponentName)
