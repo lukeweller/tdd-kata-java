@@ -158,4 +158,40 @@ public class TennisGameTest {
 		tennisGame.incrementScore("Jim");
 		assertEquals("Jim wins", tennisGame.reportScore());
 	}
+	
+	@Test
+	public void returnCorrectScoreHistory()
+	{
+		for (int _i = 0; _i < 3; _i++)
+		{
+			tennisGame.incrementScore("Jim");
+			tennisGame.incrementScore("Dwight");
+		}
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce",
+					tennisGame.getScoreHistory());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim",
+					tennisGame.getScoreHistory());
+		
+		tennisGame.incrementScore("Dwight");
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce", 
+					tennisGame.getScoreHistory());
+		
+		tennisGame.incrementScore("Dwight");
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce\nadvantage Dwight",
+					tennisGame.getScoreHistory());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce\nadvantage Dwight\ndeuce",
+				tennisGame.getScoreHistory());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce\nadvantage Dwight\ndeuce\nadvantage Jim",
+				tennisGame.getScoreHistory());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce\nadvantage Dwight\ndeuce\nadvantage Jim\nJim wins",
+				tennisGame.getScoreHistory());
+	}
 }
