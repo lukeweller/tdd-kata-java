@@ -1,8 +1,12 @@
 package tddKataPackage;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import tddKataPackage.NegativeNumberException;
 
 public class TDDKataTest {
 	
@@ -15,119 +19,128 @@ public class TDDKataTest {
 	}
 	
 	@Test
-	public void handlesEmptyString()
+	public void givenEmptyStringReturnZero()
 	{
-		Assertions.assertEquals(0, tddKata.Add(""));
+		assertEquals(0, tddKata.Add(""));
+	}
+
+	@Test
+	public void givenOneInputReturnSum()
+	{
+		assertEquals(1, tddKata.Add("1"));
 	}
 	
 	@Test
-	public void handlesNullString()
+	public void givenTwoInputsReturnSum()
 	{
-		Assertions.assertThrows(NullPointerException.class, () -> {
-			tddKata.Add(null);
-		});
+		assertEquals(3, tddKata.Add("1,2"));
 	}
 	
 	@Test
-	public void handlesOneNumber()
+	public void givenUnlimitedInputsReturnSum()
 	{
-		Assertions.assertEquals(1, tddKata.Add("1"));
+		assertEquals(3, tddKata.Add("1,1,1"));
+		assertEquals(19, tddKata.Add("1,2,3,5,8"));
 	}
 	
 	@Test
-	public void handlesTwoNumbers()
+	public void interpretsNewlineAsDelimiter()
 	{
-		Assertions.assertEquals(3, tddKata.Add("1,2"));
+		assertEquals(6, tddKata.Add("1\n2,3"));
 	}
 	
 	@Test
-	public void handlesUnknownAmountOfNumbers()
+	public void interpretsNewCustomDelimiter()
 	{
-		Assertions.assertEquals(3, tddKata.Add("1,1,1"));
+		assertEquals(3, tddKata.Add("//[;]\n1;2"));
 	}
 	
 	@Test
-	public void handlesNewLinesBetweenNumbers()
+	public void givenNegativesThrowException()
 	{
-		Assertions.assertEquals(6, tddKata.Add("1\n2,3"));
-	}
-	
-	@Test
-	public void handlesDifferentDelimiters()
-	{
-		Assertions.assertEquals(3, tddKata.Add("//[;]\n1;2"));
-	}
-	
-	@Test
-	public void handlesNegativesNotAllowed()
-	{
-		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
+		assertThrows(NegativeNumberException.class, () -> {
 			tddKata.Add("-1,-2,3");
 		});
-		Assertions.assertEquals("negatives not allowed, found: -1 -2", exception.getMessage());
 	}
 	
 	@Test
-	public void handlesNegativesNotAllowedMultipleDigits()
+	public void givenNegativesThrowCorrectExceptionMessage()
 	{
-		RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
+		NegativeNumberException exception = assertThrows(NegativeNumberException.class, () -> {
+			tddKata.Add("-1,-2,3");
+		});
+		assertEquals("negatives not allowed, found: -1 -2", exception.getMessage());
+	}
+	
+	@Test
+	public void givenMulitpleDigitNegativesThrowException()
+	{
+		assertThrows(NegativeNumberException.class, () -> {
 			tddKata.Add("-10,-200,-3");
 		});
-		Assertions.assertEquals("negatives not allowed, found: -10 -200 -3", exception.getMessage());
 	}
 	
 	@Test
-	public void handlesDoubleDigitNumbers()
+	public void givenMulitpleDigitNegativesThrowCorrectExceptionMessage()
 	{
-		Assertions.assertEquals(25, tddKata.Add("10,3,12"));
+		NegativeNumberException exception = assertThrows(NegativeNumberException.class, () -> {
+			tddKata.Add("-10,-200,-3");
+		});
+		assertEquals("negatives not allowed, found: -10 -200 -3", exception.getMessage());
 	}
 	
 	@Test
-	public void handlesTripleDigitNumbers()
+	public void givenDoubleDigitNumbersReturnSum()
 	{
-		Assertions.assertEquals(1100, tddKata.Add("100,999,1"));
+		assertEquals(25, tddKata.Add("10,3,12"));
 	}
 	
 	@Test
-	public void handlesNumbersGreaterThanOneThousand()
+	public void givenTripleDigitNumbersReturnSum()
 	{
-		Assertions.assertEquals(101, tddKata.Add("1001,100,1"));
+		assertEquals(1100, tddKata.Add("100,999,1"));
 	}
 	
 	@Test
-	public void handlesAnyLengthDelimiters()
+	public void ignoreNumbersGreaterThanOneThousand()
 	{
-		Assertions.assertEquals(6, tddKata.Add("//[***]\n1***2***3"));
+		assertEquals(101, tddKata.Add("1001,100,1"));
 	}
 	
 	@Test
-	public void handlesMultipleNewDelimiters()
+	public void interpretsDelimitersOfAnyLength()
 	{
-		Assertions.assertEquals(6, tddKata.Add("//[*][%]\n1*2%3"));
+		assertEquals(6, tddKata.Add("//[***]\n1***2***3"));
 	}
 	
 	@Test
-	public void handlesMultipleNewDelimitersOfAnyLength()
+	public void interpretsMultipleCustomDelimiters()
 	{
-		Assertions.assertEquals(6, tddKata.Add("//[**][%;]\n1**2%;3"));
+		assertEquals(6, tddKata.Add("//[*][%]\n1*2%3"));
 	}
 	
 	@Test
-	public void handlesNewDelimiterIncorrectFormatting()
+	public void interpretsMutipleCustomDelimitersOfAnyLength()
 	{
-		Assertions.assertThrows(NumberFormatException.class, () -> {
+		assertEquals(6, tddKata.Add("//[**][%;]\n1**2%;3"));
+	}
+	
+	@Test
+	public void givenIncorrectFormattingThrowsException()
+	{
+		assertThrows(NumberFormatException.class, () -> {
 			tddKata.Add("/[**]\n1**2%;3");
 		});
-		Assertions.assertThrows(NumberFormatException.class, () -> {
+		assertThrows(NumberFormatException.class, () -> {
 			tddKata.Add("[**]\n1**2%;3");
 		});
-		Assertions.assertThrows(NumberFormatException.class, () -> {
+		assertThrows(NumberFormatException.class, () -> {
 			tddKata.Add("**]\n1**2%;3");
 		});
-		Assertions.assertThrows(NumberFormatException.class, () -> {
+		assertThrows(NumberFormatException.class, () -> {
 			tddKata.Add("**\n1**2%;3");
 		});
-		Assertions.assertThrows(StringIndexOutOfBoundsException.class, () -> {
+		assertThrows(StringIndexOutOfBoundsException.class, () -> {
 			tddKata.Add("//\n1**2%;3");
 		});
 	}	
