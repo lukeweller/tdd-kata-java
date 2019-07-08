@@ -5,7 +5,8 @@ Simple Kata exercises to practice test-driven development in Java
 
 **Exercise 2**: 
 
-<u>Tennis Game Kata</u>
+Tennis Game Kata
+-----------------
 
 Write a TennisGame class that will keep score of a tennis game. The rules for scoring in tennis are as follows:
 
