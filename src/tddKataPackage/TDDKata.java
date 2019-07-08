@@ -3,49 +3,38 @@ package tddKataPackage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 public class TDDKata {
 	
-	private class Tuple<X, Y> 
-	{ 
-		private final X numbers; 
-		private final Y delimiters; 
-		private Tuple(X numbers, Y delimiters)
-		{ 
-			this.numbers = numbers; 
-			this.delimiters = delimiters; 
-		 } 
-	}
-	
-	private Tuple<String, HashSet<String>> addNewDelimiters(String numbers, HashSet<String> delimiters)
+	private HashSet<String> returnNewDelimiters(String addDelimiterLine)
 	{
+		HashSet<String> newDelimiters = new HashSet<String>();
 		int index = 0;
-		while (numbers.charAt(index) != '\n')
+		while (index < addDelimiterLine.length())
 		{
-			String newDelimiterString = "";
+			StringBuilder newDelimiterString = new StringBuilder();
 			
-			while (numbers.charAt(index) != '[')
+			while (addDelimiterLine.charAt(index) != '[')
 			{
 				index++;
 			}
 			index++;
-			while (numbers.charAt(index) != ']')
+			while (addDelimiterLine.charAt(index) != ']')
 			{	
-				String newRegexCharacter = String.valueOf(numbers.charAt(index));
+				String newRegexCharacter = String.valueOf(addDelimiterLine.charAt(index));
 				if (isRegexMetaCharacter(newRegexCharacter))
 				{
 					newRegexCharacter = "\\" + newRegexCharacter;
 				}
-				newDelimiterString += newRegexCharacter;
+				newDelimiterString.append(newRegexCharacter);
 				index++;
 			}
-			delimiters.add(newDelimiterString);
+			newDelimiters.add(newDelimiterString.toString());
 			index++;
 		}
-		numbers = numbers.substring(index + 1);
 		
-		Tuple<String, HashSet<String>> returnTuple = new Tuple<String, HashSet<String>>(numbers, delimiters);
-		return returnTuple;
+		return newDelimiters;
 	}
 	
 	private boolean isRegexMetaCharacter(String s)
@@ -58,17 +47,17 @@ public class TDDKata {
 	private int returnSumOfNumberString(String numbers, HashSet<String> delimiters)
 	{
 		// Creates delimiter string for use by String.split() method
-		String delimiterString = "";
+		StringBuilder delimiterString = new StringBuilder();
 		for (String delimiter : delimiters)
 		{
-			delimiterString += delimiter + "|";
+			delimiterString.append(delimiter + "|");
 		}
 		// Cuts off trailing '|'
-		delimiterString = delimiterString.substring(0, delimiterString.length() - 1);
+		delimiterString.setLength(delimiterString.length() - 1);
 		
-		String[] numbersArray = numbers.split(delimiterString);
+		String[] numbersArray = numbers.split(delimiterString.toString());
 		
-		ArrayList<Integer> negatives = returnAllNegatives(numbersArray);
+		List<Integer> negatives = returnAllNegatives(numbersArray);
 		if (negatives.size() != 0) throwNegativesException(negatives);
 			
 		int sum = 0;
@@ -80,9 +69,9 @@ public class TDDKata {
 		return sum;
 	}
 	
-	private ArrayList<Integer> returnAllNegatives(String [] numbers)
+	private List<Integer> returnAllNegatives(String [] numbers)
 	{
-		ArrayList<Integer> negatives = new ArrayList<Integer>();
+		List<Integer> negatives = new ArrayList<Integer>();
 		for (String number : numbers)
 		{
 			int intNumber = Integer.parseInt(number);
@@ -94,14 +83,15 @@ public class TDDKata {
 		return negatives;	
 	}
 	
-	private void throwNegativesException(ArrayList<Integer> negatives)
+	private void throwNegativesException(List<Integer> negatives)
 	{
-		String exceptionMessage = "negatives not allowed, found:";
+		StringBuilder exceptionMessage = new StringBuilder("negatives not allowed, found:");
 		for (int negative : negatives)
 		{
-			exceptionMessage += " " + Integer.toString(negative);
+			exceptionMessage.append(" ");
+			exceptionMessage.append(Integer.toString(negative));
 		}
-		throw new RuntimeException(exceptionMessage);
+		throw new NegativeNumberException(exceptionMessage.toString());
 	}
 	
 	public int Add(String numbers)
@@ -112,13 +102,11 @@ public class TDDKata {
 
 		if (numbers.length() > 1 && numbers.substring(0, 2).equals("//")) 
 		{
-			// Adds new delimiter to delimiters
-			// Pops the front part off of the numbers string so that it starts with the first digit
-			// Tuple class used to return both values at once
-			Tuple<String, HashSet<String>> holderTuple = addNewDelimiters(numbers, delimiters);
+			String [] splitNumberString = numbers.split("\n");
+			String addDelimiterLine = splitNumberString[0];
+			numbers = splitNumberString[1];
 			
-			numbers = holderTuple.numbers;
-			delimiters = holderTuple.delimiters;
+			delimiters.addAll(returnNewDelimiters(addDelimiterLine));
 		}
 		
 		return returnSumOfNumberString(numbers, delimiters);
