@@ -19,7 +19,7 @@ public class TennisGame {
 		
 		if (gameOver)
 		{
-			throw new ScoringErrorException("Tried to advance game that is already complete");
+			throw new GameOverException("Tried to advance game that is already complete");
 		}
 		else if (currentlyDeuce)
 		{
