@@ -8,51 +8,97 @@ import java.util.Map;
 
 public class TennisGame {
 
+	private String server, opponent, currentlyHoldsAdvantage;
 	private Map<String, String> playerScores = new LinkedHashMap<String, String>();
 	private final List<String> possibleScores = new ArrayList<String>(Arrays.asList("love", "15", "30", "40", "game point"));
-	private String currentlyServing;
-	private String currentlyReceiving;
+	private boolean currentlyDeuce, gameOver = false;
 
 	public void incrementScore(String playerName)
 	{	
 		String currentScore = playerScores.get(playerName);
-		if (currentScore.equals("game point"))
+		
+		if (gameOver)
 		{
-			throw new ScoringErrorException("Tried to record point for player that has already won");
+			throw new ScoringErrorException("Tried to advance game that is already complete");
+		}
+		else if (currentlyDeuce)
+		{
+			if (currentlyHoldsAdvantage == null)
+			{
+				currentlyHoldsAdvantage = playerName;
+			}
+			else if (currentlyHoldsAdvantage.equals(playerName))
+			{
+				gameOver = true;
+			}
+			else
+			{
+				currentlyHoldsAdvantage = null;
+			}
 		}
 		else
 		{
 			int nextScoreIndex = possibleScores.indexOf(currentScore) + 1;
 			String nextScore = possibleScores.get(nextScoreIndex);
 			playerScores.put(playerName, nextScore);
+			
+			if (nextScore.equals("game point"))
+			{
+				gameOver = true;
+			}
+			else
+			{
+				currentlyDeuce = setIsDeuce();
+			}
 		}
 	}
 
 	public String reportScore() {
-		String currentlyServingScore = playerScores.get(currentlyServing);
-		String currentlyReceivingScore = playerScores.get(currentlyReceiving);
-		if (currentlyServingScore.equals("40") && currentlyReceivingScore.equals("40"))
+		String serverScore = playerScores.get(server);
+		String opponentScore = playerScores.get(opponent);
+		if (currentlyDeuce)
 		{
-			return "deuce";
+			if (currentlyHoldsAdvantage == null)
+			{
+				return "deuce";
+			}
+			else
+			{
+				return "advantage " + currentlyHoldsAdvantage;
+			}
 		}
 		else
 		{
-			return currentlyServingScore + "-" + currentlyReceivingScore;				
+			return serverScore + "-" + opponentScore;				
 		}
 	}
 	
-	private void changeServer()
+	public boolean isGameOver()
 	{
-		String holdCurrentlyServing = currentlyServing;
-		currentlyServing = currentlyReceiving;
-		currentlyReceiving = holdCurrentlyServing;
+		return gameOver;
 	}
-
-	public TennisGame(String playerOneName, String playerOneScore, String playerTwoName, String playerTwoScore) {
-		playerScores.put(playerOneName, playerOneScore);
-		playerScores.put(playerTwoName, playerTwoScore);
-		currentlyServing = playerOneName;
-		currentlyReceiving = playerTwoName;
+	
+	private boolean setIsDeuce()
+	{
+		String serverScore = playerScores.get(server);
+		String opponentScore = playerScores.get(opponent);
+		if (serverScore.equals("40") && opponentScore.equals("40"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+			
+	public TennisGame(String serverName, String opponentName)
+	{
+		server = serverName;
+		opponent = opponentName;
+		
+		playerScores.put(server, "love");
+		playerScores.put(opponent, "love");
 	}
 
 }
