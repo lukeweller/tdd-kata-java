@@ -7,48 +7,35 @@ import java.util.List;
 import java.util.Map;
 
 public class TennisGame {
-
-	private String server, opponent, currentlyHoldsAdvantage;
-	private Map<String, String> playerScores = new LinkedHashMap<String, String>();
-	private final List<String> possibleScores = new ArrayList<String>(Arrays.asList("love", "15", "30", "40", "game point"));
-	private boolean currentlyDeuce, gameOver = false;
-	private StringBuilder scoreHistory = new StringBuilder();
+	
+	private String server, opponent;
+	private Map<String, Integer> scores;
+	private List<String> scoreHistory;
+	private final List<String> tennisScores = new ArrayList<String>(Arrays.asList("love", "15", "30", "40"));
 
 	public void incrementScore(String playerName)
 	{	
-		String currentScore = playerScores.get(playerName);
-		
-		if (gameOver)
+		if (isGameOver())
 		{
 			throw new GameOverException("Tried to advance game that is already complete");
 		}
-		else if (currentlyDeuce)
+		else
 		{
-			if (currentlyHoldsAdvantage == null)
-			{
-				currentlyHoldsAdvantage = playerName;
-				scoreHistory.append(reportScore() + "\n");
-				return;
-			}
-			else if (currentlyHoldsAdvantage.equals(playerName));
-			else
-			{
-				currentlyHoldsAdvantage = null;
-				scoreHistory.append(reportScore() + "\n");
-				return;
-			}
+			scores.put(playerName, scores.get(playerName) + 1);
+			scoreHistory.add(reportScore());
 		}
-		changePlayerScore(playerName, currentScore);
-		scoreHistory.append(reportScore() + "\n");
 	}
-
+	
+	public boolean isGameOver()
+	{
+		return (scores.get(server) > 3 || scores.get(opponent) > 3) && (Math.abs(scores.get(server) - scores.get(opponent)) > 1);
+	}
+	
 	public String reportScore()
 	{
-		String serverScore = playerScores.get(server);
-		String opponentScore = playerScores.get(opponent);
-		if (gameOver)
+		if (isGameOver())
 		{
-			if (serverScore.equals("game point"))
+			if (scores.get(server) > scores.get(opponent))
 			{
 				return server + " wins";
 			}
@@ -57,72 +44,52 @@ public class TennisGame {
 				return opponent + " wins";
 			}
 		}
-		else if (currentlyDeuce)
+		else if (isDeuce())
 		{
-			if (currentlyHoldsAdvantage == null)
+			if (scores.get(server) > scores.get(opponent))
 			{
-				return "deuce";
+				return "advantage " + server;
+			}
+			else if (scores.get(server) < scores.get(opponent))
+			{
+				return "advantage " + opponent;
 			}
 			else
 			{
-				return "advantage " + currentlyHoldsAdvantage;
+				return "deuce";
 			}
 		}
 		else
 		{
-			// ? for Code Review
-			// It is it worth it or considered best practice to 
-			// use a stringBuilder object for this purpose
-			// As opposed to just concatenating the strings
-			return serverScore + "-" + opponentScore;				
+			return tennisScores.get(scores.get(server)) + "-" + tennisScores.get(scores.get(opponent));				
 		}
 	}
 	
-	
-	public String getScoreHistory()
+	private boolean isDeuce()
 	{
-		String scoreHistoryString = scoreHistory.toString();
-		// Cuts off trailing '\n'
-		return scoreHistoryString.substring(0, scoreHistoryString.length() - 1);
-	}
-	
-	public boolean isGameOver()
-	{
-		return gameOver;
-	}
-	
-	private void changePlayerScore(String playerName, String currentScore)
-	{
-		int nextScoreIndex = possibleScores.indexOf(currentScore) + 1;
-		String nextScore = possibleScores.get(nextScoreIndex);
-		playerScores.put(playerName, nextScore);
-			
-		if (nextScore.equals("game point"))
-		{
-			gameOver = true;
-		}
-		else
-		{
-			currentlyDeuce = isCurrentlyDeuce();
-		}
-	}
-	
-	private boolean isCurrentlyDeuce()
-	{
-		String serverScore = playerScores.get(server);
-		String opponentScore = playerScores.get(opponent);
-		return (serverScore.equals("40") && opponentScore.equals("40"));
-	}
-			
-	public TennisGame(String serverName, String opponentName)
-	{
-		server = serverName;
-		opponent = opponentName;
-		
-		playerScores.put(server, "love");
-		playerScores.put(opponent, "love");
-		
-		scoreHistory.append("love-love\n");
+		return scores.get(server) > 2 && scores.get(opponent) > 2 && !isGameOver();
 	}
 
+	public String getScoreHistory()
+	{
+		StringBuilder historyString = new StringBuilder();
+		for (String score : scoreHistory)
+		{
+			historyString.append(score + "\n");
+		}
+		// Cuts off trailing '\n'
+		return historyString.toString().substring(0, historyString.length() - 1);
+	}
+			
+	public TennisGame(String server, String opponent)
+	{	
+		this.server = server;
+		this.opponent = opponent;
+		
+		scores = new LinkedHashMap<String, Integer>();
+		scores.put(server, 0);
+		scores.put(opponent, 0);
+		
+		scoreHistory = new ArrayList<String>(Arrays.asList("love-love"));
+	}
 }
