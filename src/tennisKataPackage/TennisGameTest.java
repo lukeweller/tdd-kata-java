@@ -7,191 +7,159 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TennisGameTest {
-	
+
 	private TennisGame tennisGame;
+	private final String testServerName = "server";
+	private final String testOpponentName = "opponent";
 	
+	private void advanceGame(int incrementServer, int incrementOpponent)
+	{
+		for (int i = 0; i < incrementServer; i++) tennisGame.incrementScore(testServerName);
+		for (int i = 0; i < incrementOpponent; i++) tennisGame.incrementScore(testOpponentName);
+	}
+
 	@BeforeEach
 	public void instantiateTestObject()
 	{
-		tennisGame = new TennisGame("Jim", "Dwight");
+		tennisGame = new TennisGame(testServerName, testOpponentName);
 	}
-	
+
 	@Test
 	public void reportTheCurentScore()
 	{
 		assertEquals("love-love", tennisGame.reportScore());
 	}
-	
+
 	@Test
 	public void incrementPlayerScore()
 	{
-		tennisGame.incrementScore("Jim");
+		tennisGame.incrementScore(testServerName);
 		assertEquals("15-love", tennisGame.reportScore());
-		
-		tennisGame.incrementScore("Dwight");
+
+		tennisGame.incrementScore(testOpponentName);
 		assertEquals("15-15", tennisGame.reportScore());
-		
-		for (int _i = 0; _i < 2; _i++)
-		{
-			tennisGame.incrementScore("Jim");
-		}
+
+		advanceGame(2,0);
 		assertEquals("40-15", tennisGame.reportScore());
 	}
-	
+
 	@Test
 	public void exceptionOnIncrementPastGamePoint()
 	{
-		for (int _i = 0; _i < 4; _i++)
-		{
-			tennisGame.incrementScore("Jim");
-		}
+		advanceGame(4,0);
 		assertThrows(GameOverException.class, () -> {
-			tennisGame.incrementScore("Jim");
+			tennisGame.incrementScore(testServerName);
 		});
 	}
-	
-	@Test
-	public void exceptionOnIncrementPastGamePointCorrectErrorMessage()
-	{
-		for (int _i = 0; _i < 4; _i++)
-		{
-			tennisGame.incrementScore("Jim");
-		}
-		GameOverException exception = assertThrows(GameOverException.class, () -> {
-			tennisGame.incrementScore("Jim");
-		});
-		assertEquals("Tried to advance game that is already complete", exception.getMessage());
-	}
-	
+
 	@Test
 	public void tieAtFortyReturnsDeuce()
 	{
-		for (int _i = 0; _i < 3; _i++)
-		{
-			tennisGame.incrementScore("Jim");
-			tennisGame.incrementScore("Dwight");
-		}
+		advanceGame(3,3);
 		assertEquals("deuce", tennisGame.reportScore());
 	}
-	
+
 	@Test
 	public void pointAfterDeuceReturnsAdvantage()
 	{
-		for (int _i = 0; _i < 3; _i++)
-		{
-			tennisGame.incrementScore("Jim");
-			tennisGame.incrementScore("Dwight");
-		}
-		
-		tennisGame.incrementScore("Jim");
-		assertEquals("advantage Jim", tennisGame.reportScore());
-		
-		tennisGame.incrementScore("Dwight");
+		advanceGame(3,3);
+
+		tennisGame.incrementScore(testServerName);
+		assertEquals("advantage " + testServerName, tennisGame.reportScore());
+
+		tennisGame.incrementScore(testOpponentName);
 		assertEquals("deuce", tennisGame.reportScore());
-		
-		tennisGame.incrementScore("Dwight");
-		assertEquals("advantage Dwight", tennisGame.reportScore());
+
+		tennisGame.incrementScore(testOpponentName);
+		assertEquals("advantage " + testOpponentName, tennisGame.reportScore());
 	}
-	
+
 	@Test
 	public void checkIfGameOverWorksAsExpected()
 	{
-		for (int _i = 0; _i < 3; _i++)
-		{
-			tennisGame.incrementScore("Jim");
-			tennisGame.incrementScore("Dwight");
-		}	
+		advanceGame(3,3);
 		assertEquals(false, tennisGame.isGameOver());
-		
-		tennisGame.incrementScore("Jim");
+
+		tennisGame.incrementScore(testServerName);
 		assertEquals(false, tennisGame.isGameOver());
-		
-		tennisGame.incrementScore("Jim");
+
+		tennisGame.incrementScore(testServerName);
 		assertEquals(true, tennisGame.isGameOver());
 	}
-	
+
 	@Test
 	public void returnServerWinsAfterGameOver()
 	{
-		for (int _i = 0; _i < 4; _i++)
-		{
-			tennisGame.incrementScore("Jim");
-		}
-		assertEquals("Jim wins", tennisGame.reportScore());
+		advanceGame(4, 0);
+		assertEquals(testServerName + " wins", tennisGame.reportScore());
 	}
-	
+
 	@Test
 	public void returnOpponentWinsAfterGameOver()
 	{
-		for (int _i = 0; _i < 4; _i++)
-		{
-			tennisGame.incrementScore("Dwight");
-		}
-		assertEquals("Dwight wins", tennisGame.reportScore());
+		advanceGame(0,4);
+		assertEquals(testOpponentName + " wins", tennisGame.reportScore());
 	}
-	
+
 	@Test
 	public void returnServerWinsAfterComplexGame()
 	{
-		for (int _i = 0; _i < 3; _i++)
-		{
-			tennisGame.incrementScore("Jim");
-			tennisGame.incrementScore("Dwight");
-		}
+		advanceGame(3,3);
 		assertEquals("deuce", tennisGame.reportScore());
-		
-		tennisGame.incrementScore("Jim");
-		assertEquals("advantage Jim", tennisGame.reportScore());
-		
-		tennisGame.incrementScore("Dwight");
+
+		tennisGame.incrementScore(testServerName);
+		assertEquals("advantage " + testServerName, tennisGame.reportScore());
+
+		tennisGame.incrementScore(testOpponentName);
 		assertEquals("deuce", tennisGame.reportScore());
-		
-		tennisGame.incrementScore("Dwight");
-		assertEquals("advantage Dwight", tennisGame.reportScore());
-		
-		tennisGame.incrementScore("Jim");
+
+		tennisGame.incrementScore(testOpponentName);
+		assertEquals("advantage " + testOpponentName, tennisGame.reportScore());
+
+		tennisGame.incrementScore(testServerName);
 		assertEquals("deuce", tennisGame.reportScore());
-		
-		tennisGame.incrementScore("Jim");
-		assertEquals("advantage Jim", tennisGame.reportScore());
-		
-		tennisGame.incrementScore("Jim");
-		assertEquals("Jim wins", tennisGame.reportScore());
+
+		tennisGame.incrementScore(testServerName);
+		assertEquals("advantage " + testServerName, tennisGame.reportScore());
+
+		tennisGame.incrementScore(testServerName);
+		assertEquals(testServerName + " wins", tennisGame.reportScore());
 	}
-	
+
 	@Test
 	public void returnCorrectScoreHistory()
 	{
-		for (int _i = 0; _i < 3; _i++)
-		{
-			tennisGame.incrementScore("Jim");
-			tennisGame.incrementScore("Dwight");
+		for (int i = 0; i < 3; i++) {
+			tennisGame.incrementScore(testServerName);
+			tennisGame.incrementScore(testOpponentName);
 		}
-		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce",
-					tennisGame.getScoreHistory());
-		
-		tennisGame.incrementScore("Jim");
-		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim",
-					tennisGame.getScoreHistory());
-		
-		tennisGame.incrementScore("Dwight");
-		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce", 
-					tennisGame.getScoreHistory());
-		
-		tennisGame.incrementScore("Dwight");
-		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce\nadvantage Dwight",
-					tennisGame.getScoreHistory());
-		
-		tennisGame.incrementScore("Jim");
-		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce\nadvantage Dwight\ndeuce",
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce", tennisGame.getScoreHistory());
+
+		tennisGame.incrementScore(testServerName);
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage " + testServerName,
 				tennisGame.getScoreHistory());
-		
-		tennisGame.incrementScore("Jim");
-		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce\nadvantage Dwight\ndeuce\nadvantage Jim",
+
+		tennisGame.incrementScore(testOpponentName);
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage " + testServerName +"\ndeuce",
 				tennisGame.getScoreHistory());
-		
-		tennisGame.incrementScore("Jim");
-		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage Jim\ndeuce\nadvantage Dwight\ndeuce\nadvantage Jim\nJim wins",
+
+		tennisGame.incrementScore(testOpponentName);
+		assertEquals("love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage " + testServerName +"\ndeuce" + "\nadvantage " + testOpponentName,
+				tennisGame.getScoreHistory());
+
+		tennisGame.incrementScore(testServerName);
+		assertEquals(
+				"love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage " + testServerName +"\ndeuce" + "\nadvantage " + testOpponentName + "\ndeuce",
+				tennisGame.getScoreHistory());
+
+		tennisGame.incrementScore(testServerName);
+		assertEquals(
+				"love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage " + testServerName +"\ndeuce" + "\nadvantage " + testOpponentName + "\ndeuce" + "\nadvantage " + testServerName,
+				tennisGame.getScoreHistory());
+
+		tennisGame.incrementScore(testServerName);
+		assertEquals(
+				"love-love\n15-love\n15-15\n30-15\n30-30\n40-30\ndeuce\nadvantage " + testServerName +"\ndeuce" + "\nadvantage " + testOpponentName + "\ndeuce" + "\nadvantage " + testServerName + "\n" + testServerName + " wins",
 				tennisGame.getScoreHistory());
 	}
 }
