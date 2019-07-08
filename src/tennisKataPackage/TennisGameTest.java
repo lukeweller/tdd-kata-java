@@ -13,7 +13,7 @@ public class TennisGameTest {
 	@BeforeEach
 	public void instantiateTestObject()
 	{
-		tennisGame = new TennisGame("Jim", "love", "Dwight", "love");
+		tennisGame = new TennisGame("Jim", "Dwight");
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ public class TennisGameTest {
 		ScoringErrorException exception = assertThrows(ScoringErrorException.class, () -> {
 			tennisGame.incrementScore("Jim");
 		});
-		assertEquals("Tried to record point for player that has already won", exception.getMessage());
+		assertEquals("Tried to advance game that is already complete", exception.getMessage());
 	}
 	
 	@Test
@@ -72,6 +72,25 @@ public class TennisGameTest {
 			tennisGame.incrementScore("Dwight");
 		}
 		assertEquals("deuce", tennisGame.reportScore());
+	}
+	
+	@Test
+	public void pointAfterDeuceReturnsAdvantage()
+	{
+		for (int _i = 0; _i < 3; _i++)
+		{
+			tennisGame.incrementScore("Jim");
+			tennisGame.incrementScore("Dwight");
+		}
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals("advantage Jim", tennisGame.reportScore());
+		
+		tennisGame.incrementScore("Dwight");
+		assertEquals("deuce", tennisGame.reportScore());
+		
+		tennisGame.incrementScore("Dwight");
+		assertEquals("advantage Dwight", tennisGame.reportScore());
 	}
 	
 }
