@@ -31,11 +31,11 @@ public class TennisGameTest {
 		tennisGame.incrementScore("Dwight");
 		assertEquals("15-15", tennisGame.reportScore());
 		
-		for (int _i = 0; _i < 3; _i++)
+		for (int _i = 0; _i < 2; _i++)
 		{
 			tennisGame.incrementScore("Jim");
 		}
-		assertEquals("game point-15", tennisGame.reportScore());
+		assertEquals("40-15", tennisGame.reportScore());
 	}
 	
 	@Test
@@ -110,4 +110,52 @@ public class TennisGameTest {
 		assertEquals(true, tennisGame.isGameOver());
 	}
 	
+	@Test
+	public void returnServerWinsAfterGameOver()
+	{
+		for (int _i = 0; _i < 4; _i++)
+		{
+			tennisGame.incrementScore("Jim");
+		}
+		assertEquals("Jim wins", tennisGame.reportScore());
+	}
+	
+	@Test
+	public void returnOpponentWinsAfterGameOver()
+	{
+		for (int _i = 0; _i < 4; _i++)
+		{
+			tennisGame.incrementScore("Dwight");
+		}
+		assertEquals("Dwight wins", tennisGame.reportScore());
+	}
+	
+	@Test
+	public void returnServerWinsAfterComplexGame()
+	{
+		for (int _i = 0; _i < 3; _i++)
+		{
+			tennisGame.incrementScore("Jim");
+			tennisGame.incrementScore("Dwight");
+		}
+		assertEquals("deuce", tennisGame.reportScore());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals("advantage Jim", tennisGame.reportScore());
+		
+		tennisGame.incrementScore("Dwight");
+		assertEquals("deuce", tennisGame.reportScore());
+		
+		tennisGame.incrementScore("Dwight");
+		assertEquals("advantage Dwight", tennisGame.reportScore());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals("deuce", tennisGame.reportScore());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals("advantage Jim", tennisGame.reportScore());
+		
+		tennisGame.incrementScore("Jim");
+		assertEquals("Jim wins", tennisGame.reportScore());
+	}
 }
