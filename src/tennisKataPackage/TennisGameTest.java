@@ -45,7 +45,7 @@ public class TennisGameTest {
 		{
 			tennisGame.incrementScore("Jim");
 		}
-		assertThrows(ScoringErrorException.class, () -> {
+		assertThrows(GameOverException.class, () -> {
 			tennisGame.incrementScore("Jim");
 		});
 	}
@@ -57,7 +57,7 @@ public class TennisGameTest {
 		{
 			tennisGame.incrementScore("Jim");
 		}
-		ScoringErrorException exception = assertThrows(ScoringErrorException.class, () -> {
+		GameOverException exception = assertThrows(GameOverException.class, () -> {
 			tennisGame.incrementScore("Jim");
 		});
 		assertEquals("Tried to advance game that is already complete", exception.getMessage());
